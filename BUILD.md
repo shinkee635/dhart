@@ -73,7 +73,7 @@ and hit ENTER. The repository will then be cloned to your local machine. For HTT
 
 You can build using either CMAKE from the command line, _or_ through Visual Studio.  Please note the instructions for Visual Studio as they still require the CMAKE installation within visual studio. 
 
-## Using CMAKE Command Line
+## Using CMAKE Command Line for Windows
 
 <details>
   <summary>CMAKE Build Details</summary>
@@ -100,6 +100,31 @@ After building (assuming it went okay), run:
 1. `cmake --install .`
 
 1. cd to build/Python and run `pip install .`
+
+</details>
+
+## Using CMAKE Command Line for Linux
+
+<details>
+Using CMAKE in Linux is largely similar to Windows, with some differences.
+
+General Instructions:
+
+1. `cd src`
+
+1. `mkdir build`
+
+1. `cd build`
+
+1. `cmake -DDHARTAPI_Config=All -DDHARTAPI_EnablePython=ON -DCMAKE_INSTALL_PREFIX={INSTALL_DIR} ..` (replace INSTALL_DIR with directory of your choise)
+
+1. `make && make install`
+
+Environment Setups:
+
+1. Generally you should try to install the package where your OS is able to locate your library files. For Ubuntu, usually it is /usr/lib/x86_64-linux-gnu
+
+1. However you can also install it into any custom location within your own user directory, and then add the locations into the LD_LIBRARY_PATH environment variable using your .bashrc file (remember to either source the .bashrc file again, or restart your terminal).
 
 </details>
 

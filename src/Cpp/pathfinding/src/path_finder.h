@@ -11,6 +11,7 @@
 #include <string>
 #include <cassert>
 #include <iostream>
+#include <cmath>
 
 namespace HF {
 	// Forward declares so we don't need to include these in the header.

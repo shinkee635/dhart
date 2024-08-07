@@ -99,7 +99,7 @@ namespace HF::Pathfinding {
 			// If this is triggered, there's something wrong with this algorithm because the path
 			// suddenly has more nodes than there are in the entire graph.
 			if (p.size() > pred.size())
-				throw std::exception("Path included more nodes than contaiend in the graph!");
+				throw std::runtime_error("Path included more nodes than contaiend in the graph!");
 
 			// Get the next node from the predecessor matrix
 			int next_node = pred[current_node];

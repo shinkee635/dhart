@@ -9,10 +9,10 @@
 #include <Geometry>
 #include <HFExceptions.h>
 #include <math.h>
-#include <corecrt_math_defines.h>
+//#include <corecrt_math_defines.h>
 #include <iostream>
 #include <robin_hood.h>
-
+#include <vector>
 
 #define _USE_MATH_DEFINES
 
@@ -171,7 +171,7 @@ namespace HF::Geometry {
 			verts(1, i) = vertex[1];
 			verts(2, i) = vertex[2];
 		}
-		if (verts.hasNaN()) throw std::exception("Creation of mesh info failed");
+		if (verts.hasNaN()) throw std::runtime_error("Creation of mesh info failed");
 	}
 
 	template <typename T>
@@ -189,7 +189,7 @@ namespace HF::Geometry {
 		quat.normalize();
 		verts = yrot.toRotationMatrix() * verts;
 		//auto newer_matrix = new_matrix.eval();
-		if (!verts.allFinite()) throw std::exception("Verts has NAN");
+		if (!verts.allFinite()) throw std::runtime_error("Verts has NAN");
 	}
 
 	template <typename T>
@@ -285,7 +285,7 @@ namespace HF::Geometry {
 	array<T, 3> MeshInfo<T>::operator[](int i) const
 	{
 		// Throw if going beyond the array bounds
-		if (i < 0 || i > NumVerts()) throw std::exception("Out of range on index");
+		if (i < 0 || i > NumVerts()) throw std::runtime_error("Out of range on index");
 	
 		// Create and return out array.
 		array<T, 3> out_array;
