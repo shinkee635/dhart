@@ -950,7 +950,6 @@ if(NOT WIN32)
         # Inform the user to source their .bashrc file
         message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
     else()
-        message(STATUS "Current LD_LIBRARY_PATH ${LD_LIBRARY_PATH}")
         message(STATUS "${CMAKE_INSTALL_PREFIX}/lib is already in LD_LIBRARY_PATH")
     endif()
 
@@ -968,7 +967,6 @@ if(NOT WIN32)
         # Inform the user to source their .bashrc file
         message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
     else()
-        message(STATUS "Current PYTHONPATH ${PYTHONPATH}")
         message(STATUS "${CMAKE_INSTALL_PREFIX} is already in PYTHONPATH")
     endif()
 endif()
