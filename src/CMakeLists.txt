@@ -458,7 +458,7 @@ elseif(${DHARTAPI_Config} STREQUAL "GraphGenerator")
                     ${TBB_LIB}
             )
             target_include_directories(DHARTAPI PRIVATE ${EMBREE_INCLUDE_DIR})
-        endif
+        endif()
         LIST(APPEND HF_SOURCES
                 ${C_INTERFACE_DIR}/cinterface_utils.h
                 ${C_INTERFACE_DIR}/cinterface_utils.cpp
