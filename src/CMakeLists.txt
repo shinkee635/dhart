@@ -84,6 +84,13 @@ if (NOT "${DHARTAPI_InstallTitle}" STREQUAL "")
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/release/${DHARTAPI_InstallTitle})
 endif()
 
+# Check if CMAKE_INSTALL_PREFIX is set by the user, otherwise set to default
+if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX "/usr/local/dhart" CACHE PATH "Installation directory prefix" FORCE)
+endif()
+
+message(STATUS "CMAKE_INSTALL_PREFIX is set to ${CMAKE_INSTALL_PREFIX}")
+
 # Find the Embree library and include directories, only for Linux
 if(NOT WIN32)
     find_library(EMBREE_LIB embree3 PATHS ${CMAKE_SOURCE_DIR}/external/Embree/bin NO_DEFAULT_PATH)
@@ -830,7 +837,11 @@ install(TARGETS ${project_name}
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include
     )
-install(FILES ${DEPENDENCY_BINARIES} DESTINATION bin)
+if(WIN32)
+    install(FILES ${DEPENDENCY_BINARIES} DESTINATION bin)
+else()
+    install(FILES ${DEPENDENCY_BINARIES} DESTINATION lib)
+endif()
 
 # Install python if the option is set to true
 if(DHARTAPI_EnablePython)
@@ -841,7 +852,7 @@ if(DHARTAPI_EnablePython)
     if(WIN32)
         install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/DHARTAPI.dll" DESTINATION dhart/bin)
     else()
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>libDHARTAPI.so" DESTINATION dhart/bin)
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/libDHARTAPI.so" DESTINATION dhart/bin)
     endif()
     install (FILES ${RELEASE_DEPENDENCY_BINARIES} CONFIGURATIONS Release DESTINATION dhart/bin)
     install (FILES ${DEBUG_DEPENDENCY_BINARIES} CONFIGURATIONS Debug DESTINATION dhart/bin)
@@ -873,37 +884,78 @@ install(EXPORT ${project_name}Targets
         lib/cmake/${project_name}
 )
 
-# if (DHARTAPI_EnableCSharp)
-#     add_subdirectory(${CSHARP_DIR})
+# Only build C# package on Windows
+if(WIN32)
+    if (DHARTAPI_EnableCSharp)
+        add_subdirectory(${CSHARP_DIR})
 
-#     add_custom_command(TARGET DHARTAPI POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#             "${CMAKE_SOURCE_DIR}/external/Embree/bin/tbb.dll"
-#             "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/tbb.dll"
-#     )
+        add_custom_command(TARGET DHARTAPI POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_SOURCE_DIR}/external/Embree/bin/tbb.dll"
+                "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/tbb.dll"
+        )
 
-#     add_custom_command(TARGET DHARTAPI POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#             "${CMAKE_SOURCE_DIR}/external/Embree/bin/embree3.dll"
-#             "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/embree3.dll"
-#     )
+        add_custom_command(TARGET DHARTAPI POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_SOURCE_DIR}/external/Embree/bin/embree3.dll"
+                "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/embree3.dll"
+        )
 
-#     # The following commands copy resources necessary for C# to perform its unittests
-#     add_custom_command(TARGET DHARTAPI POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#             "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/DHARTAPI.dll"
-#             "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/DHARTAPI.dll"
-#     )
+        # The following commands copy resources necessary for C# to perform its unittests
+        add_custom_command(TARGET DHARTAPI POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>/DHARTAPI.dll"
+                "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/DHARTAPI.dll"
+        )
 
-#     # Copy example models to the build directory for C#
-#     add_custom_command(TARGET DHARTAPI POST_BUILD
-#         COMMAND ${CMAKE_COMMAND} -E copy_directory
-#             "${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_PACKAGE_DIR}/dhart/Example Models"
-#             "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/ExampleModels"
-#     )
-#     install (FILES ${CSHARP_DEPENDENCY_BINARIES} DESTINATION bin)
-# endif()
-
+        # Copy example models to the build directory for C#
+        add_custom_command(TARGET DHARTAPI POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_PACKAGE_DIR}/dhart/Example Models"
+                "${CMAKE_CURRENT_BINARY_DIR}/CSharp/$<CONFIGURATION>/ExampleModels"
+        )
+        install (FILES ${CSHARP_DEPENDENCY_BINARIES} DESTINATION bin)
+    endif()
+endif()
 
 install(FILES ${ROOT_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX})
 #add_library(${project_name}::${project_name} ALIAS ${project_name})
+
+# In Linux, check for LD_LIBRARY_PATH, add its export to the .bashrc file if not already done
+if(NOT WIN32)
+    # Setup LD_LIBRARY_PATH
+    execute_process(COMMAND bash -c "echo $LD_LIBRARY_PATH"
+        OUTPUT_VARIABLE LD_LIBRARY_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    if(NOT LD_LIBRARY_PATH MATCHES ${CMAKE_INSTALL_PREFIX}/lib)
+        message(STATUS "Adding ${CMAKE_INSTALL_PREFIX}/lib to LD_LIBRARY_PATH")
+
+        # Append the desired path to .bashrc
+        file(APPEND $ENV{HOME}/.bashrc "\n# Added by CMake\nexport LD_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib:\$LD_LIBRARY_PATH\n")
+
+        # Inform the user to source their .bashrc file
+        message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
+    else()
+        message(STATUS "Current LD_LIBRARY_PATH ${LD_LIBRARY_PATH}")
+        message(STATUS "${CMAKE_INSTALL_PREFIX}/lib is already in LD_LIBRARY_PATH")
+    endif()
+
+    # Setup PYTHONPATH
+    execute_process(COMMAND bash -c "echo $PYTHONPATH"
+        OUTPUT_VARIABLE PYTHONPATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    if(NOT PYTHONPATH MATCHES ${CMAKE_INSTALL_PREFIX})
+        message(STATUS "Adding ${CMAKE_INSTALL_PREFIX} to PYTHONPATH")
+
+        # Append the desired path to .bashrc
+        file(APPEND $ENV{HOME}/.bashrc "export PYTHONPATH=${CMAKE_INSTALL_PREFIX}:\$PYTHONPATH\n")
+
+        # Inform the user to source their .bashrc file
+        message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
+    else()
+        message(STATUS "Current PYTHONPATH ${PYTHONPATH}")
+        message(STATUS "${CMAKE_INSTALL_PREFIX} is already in PYTHONPATH")
+    endif()
+endif()
