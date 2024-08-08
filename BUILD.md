@@ -122,7 +122,7 @@ General Instructions:
 
 Environment Setups:
 
-1. Generally you should try to install the package where your OS is able to locate your library files. For Ubuntu, usually it is /usr/lib/x86_64-linux-gnu
+1. Generally you should try to install the package where your OS is able to locate your library files but not overlap with system installed path. For Ubuntu, usually the system will install libraries in /usr/lib/x86_64-linux-gnu. So you should use something like /usr/local.
 
 1. However you can also install it into any custom location within your own user directory, and then add the locations into the LD_LIBRARY_PATH environment variable using your .bashrc file (remember to either source the .bashrc file again, or restart your terminal).
 
