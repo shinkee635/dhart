@@ -1,0 +1,8 @@
+{
+    "name": "Ubuntu 22.04",
+    "image": "mcr.microsoft.com/vscode/devcontainers/base:0-jammy",
+    "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+    "settings": {},
+    "extensions": [],
+    "postCreateCommand": "echo 'Setup for Ubuntu 22.04'"
+}
