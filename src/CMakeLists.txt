@@ -85,7 +85,7 @@ if (NOT "${DHARTAPI_InstallTitle}" STREQUAL "")
 endif()
 
 # Check if CMAKE_INSTALL_PREFIX is set by the user, otherwise set to default
-if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+if(NOT WIN32 AND NOT DEFINED CMAKE_INSTALL_PREFIX)
     set(CMAKE_INSTALL_PREFIX "/usr/local/dhart" CACHE PATH "Installation directory prefix" FORCE)
 endif()
 
