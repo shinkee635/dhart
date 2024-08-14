@@ -12,7 +12,9 @@
 //#include <rpc.h>
 #include <rtcore.h>
 
-//#include <corecrt_math_defines.h>
+#ifdef _WIN32
+#include <corecrt_math_defines.h>
+#endif
 #include <vector>
 #include <array>
 #include <HitStruct.h>

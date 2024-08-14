@@ -9,7 +9,9 @@
 #include <Geometry>
 #include <HFExceptions.h>
 #include <math.h>
-//#include <corecrt_math_defines.h>
+#ifdef _WIN32
+#include <corecrt_math_defines.h>
+#endif
 #include <iostream>
 #include <robin_hood.h>
 #include <vector>

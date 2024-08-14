@@ -6,7 +6,9 @@
 ///	\date		26 Jun 2020
 
 #include <embree_raytracer.h>
-//#include <corecrt_math_defines.h>
+#ifdef _WIN32
+#include <corecrt_math_defines.h>
+#endif
 #include <functional>
 #include <iostream>
 #include <thread>
