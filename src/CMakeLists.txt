@@ -853,7 +853,7 @@ install(TARGETS ${project_name}
 if(WIN32)
     install(FILES ${DEPENDENCY_BINARIES} DESTINATION bin)
 else()
-    install(FILES ${DEPENDENCY_BINARIES} DESTINATION lib)
+    install(FILES ${DEPENDENCY_BINARIES} DESTINATION bin)
 endif()
 
 # Install python if the option is set to true
