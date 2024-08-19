@@ -90,13 +90,13 @@ Generally it is better to make a build directory and build it from there.
 
 Python Debug
 
-1. `cmake ../src/ -G"Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM="x64"  -DCMAKE_CONFIGURATION_TYPES="Debug" -DCMAKE_INSTALL_PREFIX=".\..\build\Python" -DDHARTAPI_Config="All" -DDHARTAPI_EnableTests="False" -DDHARTAPI_EnablePython="True" -DDHARTAPI_EnableCSharp="False" -DINSTALL_GTEST="False" 2>&1` 
+1. `cmake ../src/ -G"Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM="x64" -DCMAKE_INSTALL_PREFIX=".\Python" -DDHARTAPI_Config="All" -DDHARTAPI_EnableTests="True" -DCMAKE_CONFIGURATION_TYPES="Debug" -DDHARTAPI_EnablePython="True" -DDHARTAPI_EnableCSharp="False" -DINSTALL_GTEST="True" 2>&1` 
 
 1. `cmake --build . --config Debug`
 
 Python Release
 
-1. `cmake ../src/  -G"Visual Studio 17 2022"  -DCMAKE_GENERATOR_PLATFORM="x64"   -DCMAKE_INSTALL_PREFIX=".\..\build\Python" -DDHARTAPI_Config="All" -DDHARTAPI_EnableTests="False" -DCMAKE_CONFIGURATION_TYPES="Release" -DDHARTAPI_EnablePython="True" -DDHARTAPI_EnableCSharp="False" -DINSTALL_GTEST="False" 2>&1`
+1. `cmake ../src/ -G"Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM="x64" -DCMAKE_INSTALL_PREFIX=".\Python" -DDHARTAPI_Config="All" -DDHARTAPI_EnableTests="True" -DCMAKE_CONFIGURATION_TYPES="Release" -DDHARTAPI_EnablePython="True" -DDHARTAPI_EnableCSharp="False" -DINSTALL_GTEST="True" 2>&1`
 
 1. `cmake --build . --config Release`
 
