@@ -941,6 +941,7 @@ if(NOT WIN32)
         OUTPUT_VARIABLE LD_LIBRARY_PATH
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+    # Add the lib dir to the library path
     if(NOT LD_LIBRARY_PATH MATCHES ${CMAKE_INSTALL_PREFIX}/lib)
         message(STATUS "Adding ${CMAKE_INSTALL_PREFIX}/lib to LD_LIBRARY_PATH")
 
@@ -951,6 +952,19 @@ if(NOT WIN32)
         message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
     else()
         message(STATUS "${CMAKE_INSTALL_PREFIX}/lib is already in LD_LIBRARY_PATH")
+    endif()
+
+    # Add the bin dir to the library path
+    if(NOT LD_LIBRARY_PATH MATCHES ${CMAKE_INSTALL_PREFIX}/bin)
+        message(STATUS "Adding ${CMAKE_INSTALL_PREFIX}/bin to LD_LIBRARY_PATH")
+
+        # Append the desired path to .bashrc
+        file(APPEND $ENV{HOME}/.bashrc "\n# Added by CMake\nexport LD_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/bin:\$LD_LIBRARY_PATH\n")
+
+        # Inform the user to source their .bashrc file
+        message(STATUS "Please run 'source ~/.bashrc' to update your environment.")
+    else()
+        message(STATUS "${CMAKE_INSTALL_PREFIX}/bin is already in LD_LIBRARY_PATH")
     endif()
 
     # Setup PYTHONPATH
