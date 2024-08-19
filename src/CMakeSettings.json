@@ -20,6 +20,11 @@
           "name": "DHARTAPI_EnableTests",
           "value": "True",
           "type": "BOOL"
+        },
+        {
+          "name": "DHARTAPI_BuildCSharpTests",
+          "value": "True",
+          "type": "BOOL"
         }
       ]
     },
