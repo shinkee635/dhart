@@ -66,10 +66,9 @@ TEST(_VisibilityGraph, ParallelNodesOnFlatPlaneAllConnect) {
 
 
 TEST(_VisibilityGraph, NodesOnFlatPlaneWithWallDontConnect) {
-	vector<MeshInfo> meshInfos = LoadMeshObjects(plane_path, HF::Geometry::ONLY_FILE, true);
+	vector<MeshInfo> meshInfos = LoadMeshObjects(walled_plane_path, HF::Geometry::ONLY_FILE, true);
 	EmbreeRayTracer plane_tracer(meshInfos);
 	std::vector<Node> nodes{ Node(0,-1,0), Node(0,1,0) };
-
 	auto graph = AllToAll(plane_tracer, nodes);
 
 	for (const auto& node : nodes) {
